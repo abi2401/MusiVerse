@@ -1,0 +1,525 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiVerse</title>
+    <style>
+html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        nav {
+            width: 100%;
+            height: 60px;
+            background-color: #0d47a1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            margin-top: 60px; /* Push content below the navbar */
+            height: 100vh /* Take up the remaining height after the navbar */
+        }
+        .center-column {
+            flex: 3; /* Wider center column */
+            display: flex;
+            max-width: 700px;
+            justify-content: center;
+            height: 90%;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .right-column,.left-column {
+            flex: 1; /* Equal width for side columns */
+            height: 90%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin-top: 60px;
+        }
+
+        .right-column iframe,.left-column iframe {
+            flex: 1;
+            border-radius: 20px; /* Add curvature to iframe edges */
+            overflow: hidden; /* Ensure content doesn't spill outside rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+                
+        .right-column,.left-column {
+            height: 96%; /* Or a fixed height, as appropriate */
+            display: flex;
+            flex-direction: column;
+            margin:10px 10px 10px 10px;
+        }
+
+        
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-right{
+            padding-right: 20px;
+        }
+
+        .logo-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: transparent; /* Set background to transparent */
+            cursor: pointer;
+            padding-left: 18 px;
+        }
+
+        .logo-button img {
+            width: 50px; /* Match button width */
+            height: 50px; /* Match button height */
+            border-radius: 50%; /* Make image circular */
+            object-fit: cover; /* Ensure image covers the area */
+        }
+
+
+        .home-button, .account-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: #f0f0f0; /* Default background */
+        }
+
+        .home-button img, .account-button img {
+            width: 24px; /* Adjust icon size */
+            height: 24px;
+        }
+
+        .home-button, .account-button {
+            background-color: #007bff; /* Hover background color */
+        }
+
+        .nav-search-container {
+            position: relative;
+            display: inline-block;
+            width: 350px;
+        }
+
+        .nav-search-box {
+            padding: 10px 40px 10px 15px; /* Adjust padding for search icon */
+            border-radius: 25px;
+            border: none;
+            outline: none;
+        }
+
+        .nav-search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-search-button img {
+            height: 20px; /* Adjust icon size */
+        }
+
+
+        .nav-search-container {
+            display: flex;
+            align-items: center;
+            gap:15px;
+        }
+
+        /* Style the dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it appears on top */
+            right: 0; /* Align to the right if necessary */
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            padding-right: 10px;
+            display: block;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            position: absolute;
+            bottom: 2%;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-container {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            gap: 2%;
+            margin-bottom: 2%; 
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 2%;
+        }
+        .toggle-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px; /* Adjust size as needed */
+            height: 45px;
+            border: none;
+            border-radius: 50%; /* Make them circular */
+            background-color: #f0f0f0; /* Default background */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .toggle-button img {
+            width: 24px; /* Adjust icon size */
+            height: 24px;
+        }
+
+        .toggle-button:hover {
+            background-color: #007bff; /* Hover background color */
+        }
+
+        .toggle-button.active {
+            background-color: #0056b3; /* Active state background color */
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input:focus {
+            border-color: #007bff;
+        }
+
+        input, textarea {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus, textarea:focus {
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: none; /* Prevent resizing */
+            overflow-y: auto; /* Show scrollbar if needed */
+            height: 50px; /* Set initial height */
+        }
+        textarea::placeholder {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .send-button {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background-color: #0d47a1;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+        .scrollable-container {
+            width: 90%; /* Takes full width of the parent */
+            max-height: 300px; /* Adjust height as needed */
+            overflow-x: auto; /* Enables horizontal scroll */
+            overflow-y: hidden; /* Hides vertical scrollbar */
+            background-color: #f9f9f9; /* Background color for the container */
+            border-radius: 10px; /* Rounded edges */
+            padding: 10px;
+            margin: 20px 0; /* Space between containers */
+            display: flex; /* Flexbox for horizontal layout */
+            align-items: center; /* Centers content vertically */
+        }
+
+        .scrollable-container::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .scrollable-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        .image-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px; /* Adds padding around the image and name */
+            background-color: #bbdefb; /* Background color for the card */
+            border: 2px solid #000; /* Bold border around the card */
+            border-radius: 10px; /* Curved edges for the card */
+            margin-right: 15px; /* Space between cards */
+            width: fit-content; /* Adjusts width to fit content */
+        }
+
+        .image-card img {
+            width: 150px; /* Square image size */
+            height: 150px; /* Square image size */
+            border-radius: 15px; /* Curved edges for images */
+        }
+
+        .image-card span {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold; /* Make the song name bold */
+        }
+
+
+        iframe {
+            border: none; /* Removes the border */
+            outline: none; /* Ensures no outline appears */
+        }
+
+    
+
+    </style>
+</head>
+<body scrolling="no">
+    <nav>
+        <div class="nav-left">
+            <button class="logo-button">
+                <img src="{% static 'logo-icon.jpeg' %}" alt="Logo">                
+            </button>
+            <button class="home-button">
+                <a href="{{ base_url }}"><img src="{% static 'home-icon.svg' %}" alt="Home Button"></a>
+            </button>
+            <div class="nav-search-container">
+                <input type="text" class="search-box" placeholder="Search">
+                <button class="nav-search-button">
+                    <img src="{% static 'search-icon.svg' %}" alt="Search Icon">
+                </button>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="dropdown">
+                <button class="account-button dropbtn">
+                    <img src="{% static 'account-icon.svg' %}" alt="Account Icon">
+                </button>
+                <div class="dropdown-content">
+                    <a href="{{ base_url }}account/">My Account</a>
+                    <a href="{{ base_url }}signout/">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container" scrolling="no">
+        <div class="left-column">
+            <iframe src="{{ base_url }}innovation/" scrolling="no"></iframe>
+        </div>
+        <div class="center-column">
+            <div class="hello-container">
+                <h1>Hello UserName!</h1>
+            </div>
+
+            <div class="scrollable-container">
+                <!-- Dynamic content will be added here -->
+            </div>
+
+            <div class="chat-container">
+                <div class="input-container">
+                    <textarea class="prompt-area" id="prompt-area" placeholder="Enter your prompt here..."></textarea>
+                    <button class="send-button">Send</button>
+                </div>
+                <div class="toggle-buttons">
+                    <button class="toggle-button active" id="lyricButton">
+                        <img src="{% static 'lyric-icon.svg' %}"alt="Lyric Icon">
+                    </button>
+                    <button class="toggle-button" id="composeButton">
+                        <img src="{% static 'compose-icon.svg' %}" alt="Compose Icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="right-column">
+            <iframe src="{{ base_url }}player/" scrolling="no" style="border:none; overflow: hidden;"></iframe>
+        </div>
+    </div>
+
+    <script>
+document.querySelectorAll('.toggle-button').forEach(button => {
+    button.addEventListener('click', function() {
+        document.querySelectorAll('.toggle-button').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+const scrollableContainer = document.querySelector('.scrollable-container');
+
+// Example data for dynamic content
+
+
+fetch("{% static 'music_data.json' %}")
+    .then(response => response.json())
+    .then(data => {
+        // Process the data here
+        handleMusicData(data);
+    })
+    .catch(error => console.error('Error:', error));
+    function handleMusicData(data) {
+        const scrollableContainer = document.querySelector('.scrollable-container');
+        
+        data.forEach(song => {
+            const imageCard = document.createElement('div');
+            imageCard.classList.add('image-card'); // Add a class for styling
+            
+            const img = document.createElement('img');
+            img.src = song.cover;
+            img.dataset.songId = song.id; // Store song ID as a data attribute
+            
+            img.addEventListener('click', () => {
+                updatePlayer(song);
+            });
+            
+            const songName = document.createElement('span');
+            songName.innerText = song.title; // Display song title below the image
+            songName.style.fontWeight = 'bold'; // Make the song name bold
+            
+            imageCard.appendChild(img);
+            imageCard.appendChild(songName);
+            
+            scrollableContainer.appendChild(imageCard);
+        });
+}
+
+    function updatePlayer(song) {
+    // Update the iframe in the right column with the selected song's data
+    const iframe = document.querySelector('.right-column iframe');
+    iframe.src = '{% url "player" %}?songId=' + song.id + '&title=' + song.title + '&lyrics=' + encodeURIComponent(song.lyrics) + '&audio=' + song.audio + '&cover=' + song.cover;
+}
+
+
+
+
+
+
+
+
+
+// Get the send button, compose button, and textarea elements
+// Get the send button, compose button, and textarea elements
+document.addEventListener('DOMContentLoaded', function() {
+    const sendButton = document.querySelector('.send-button');
+    const composeButton = document.getElementById('composeButton');
+    const textarea = document.getElementById('prompt-area');
+
+    sendButton.addEventListener('click', function () {
+        // Check if the compose button is active
+        if (composeButton.classList.contains('active')) {
+            // Check if textarea input is not null or empty
+            if (textarea.value.trim() !== '') {
+                // Generate a URL type request
+                const baseUrl = window.location.origin; // Use current origin as base URL
+                const params = new URLSearchParams({
+                    message: textarea.value // Assuming you want to pass the textarea value as a parameter
+                });
+                const url = `${baseUrl}/compose?${params.toString()}`;
+                
+                // Redirect to the generated URL
+                window.location.href = url;
+            } else {
+                // Handle the case when textarea input is null or empty
+                alert('Please enter a prompt.');
+            }
+        }
+        else{
+            if (textarea.value.trim() !== '') {
+                // Generate a URL type request
+                const baseUrl = window.location.origin; // Use current origin as base URL
+                const params = new URLSearchParams({
+                    message: textarea.value // Assuming you want to pass the textarea value as a parameter
+                });
+                const url = `${baseUrl}/dashboard?${params.toString()}`;
+                
+                // Redirect to the generated URL
+                window.location.href = url;
+            } else {
+                // Handle the case when textarea input is null or empty
+                alert('Please enter a prompt.');
+            } 
+        }
+    });
+});
+
+
+
+
+
+    </script>
+</body>
+</html>
